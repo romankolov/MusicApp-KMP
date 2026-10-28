@@ -1,3 +1,5 @@
+import org.gradle.jvm.toolchain.JavaLanguageVersion
+import org.gradle.jvm.toolchain.JavaToolchainService
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.konan.target.Family
 
@@ -47,7 +49,12 @@ kotlin {
             }
         }
 
-    jvm("desktop")
+    jvm("desktop") {
+        compilerOptions {
+            // Judio 0.2.x is compiled for Java 25. Keep this independent of Android's JVM 17 target.
+            jvmTarget.set(JvmTarget.JVM_25)
+        }
+    }
     js(IR) {
         browser()
     }
@@ -103,7 +110,10 @@ kotlin {
 
         desktopMain.dependencies {
             implementation(compose.desktop.common)
-            implementation(libs.vlcj)
+            implementation(libs.judio) {
+                // Judio's published jar excludes its optional Swing GUI; do not pull in the GUI theme.
+                exclude(group = "com.formdev", module = "flatlaf")
+            }
         }
 
         jsMain.dependencies {
@@ -132,4 +142,13 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
+}
+
+// Only the desktop tests need the Java 25 runtime required by Judio.
+tasks.named<Test>("desktopTest") {
+    javaLauncher.set(
+        project.extensions.getByType(JavaToolchainService::class.java).launcherFor {
+            languageVersion.set(JavaLanguageVersion.of(25))
+        }
+    )
 }

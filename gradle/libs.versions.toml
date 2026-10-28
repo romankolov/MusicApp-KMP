@@ -9,7 +9,7 @@ decompose="3.5.0"
 essenty="2.6.0"
 media3="1.11.1"
 kotlinx-serialization ="1.11.0"
-vlcj = "4.11.0"
+judio = "0.2.3"
 image-loader="1.10.0"
 kotlinx-datetime = "0.8.0"
 
@@ -52,8 +52,8 @@ kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.
 #image loaderxx
 image-loader = { module = "io.github.qdsfdhvh:image-loader", version.ref = "image-loader" }
 
-# Vlcj
-vlcj = { module = "uk.co.caprica:vlcj", version.ref = "vlcj" }
+# Judio: pure-Java desktop audio playback (requires JDK 25)
+judio = { module = "io.github.sina-rz:judio", version.ref = "judio" }
 
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 assertk = { module = "com.willowtreeapps.assertk:assertk", version.ref = "assertk" }

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.jetbrains.compose)
@@ -5,7 +7,13 @@ plugins {
 }
 
 kotlin {
-    jvm {}
+    // Judio requires Java 25; use a matching toolchain for compilation and the desktop run task.
+    jvmToolchain(25)
+    jvm {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_25)
+        }
+    }
     sourceSets {
         val jvmMain by getting {
             dependencies {
