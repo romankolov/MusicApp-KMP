@@ -30,6 +30,7 @@ import java.io.ObjectOutputStream
 fun main() {
     val lifecycle = LifecycleRegistry()
     val stateKeeper = StateKeeperDispatcher(tryRestoreStateFromFile())
+    val mediaPlayerController = MediaPlayerController(PlatformContext())
 
     val rootComponent = runOnUiThread {
         MusicRootImpl(
@@ -38,34 +39,38 @@ fun main() {
                 stateKeeper = stateKeeper,
             ),
             api = SpotifyApiImpl(),
-            mediaPlayerController = MediaPlayerController(PlatformContext())
+            mediaPlayerController = mediaPlayerController
         )
     }
 
-    application {
-        val windowState = rememberWindowState(
-            position = WindowPosition.Aligned(Alignment.Center),
-            size = getPreferredWindowSize(800, 800)
-        )
+    try {
+        application {
+            val windowState = rememberWindowState(
+                position = WindowPosition.Aligned(Alignment.Center),
+                size = getPreferredWindowSize(800, 800)
+            )
 
-        LifecycleController(lifecycle, windowState)
+            LifecycleController(lifecycle, windowState)
 
-        var isCloseRequested by remember { mutableStateOf(false) }
+            var isCloseRequested by remember { mutableStateOf(false) }
 
-        Window(
-            onCloseRequest = { isCloseRequested = true },
-            title = "MusicApp-KMP",
-            state = windowState,
-        ) {
-            CommonMainDesktop(rootComponent)
-            if (isCloseRequested) {
-                SaveStateDialog(
-                    onSaveState = { saveStateToFile(stateKeeper.save()) },
-                    onExitApplication = ::exitApplication,
-                    onDismiss = { isCloseRequested = false },
-                )
+            Window(
+                onCloseRequest = { isCloseRequested = true },
+                title = "MusicApp-KMP",
+                state = windowState,
+            ) {
+                CommonMainDesktop(rootComponent)
+                if (isCloseRequested) {
+                    SaveStateDialog(
+                        onSaveState = { saveStateToFile(stateKeeper.save()) },
+                        onExitApplication = ::exitApplication,
+                        onDismiss = { isCloseRequested = false },
+                    )
+                }
             }
         }
+    } finally {
+        mediaPlayerController.release()
     }
 }
 

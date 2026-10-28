@@ -17,7 +17,7 @@ The app uses different media players on different platforms:
 
 For iOS, AVKit is used
 For Android, Media Player is used
-For Desktop, VLC media player is used
+For Desktop, [Judio](https://github.com/sina-rz/judio) is used (pure Java; no separate media player installation is required)
 For the Web, an HTML media player is used.
 
 ## Integration with Low-Level APIs
@@ -41,8 +41,18 @@ git clone https://github.com/SEAbdulbasit/MusicApp-KMP.git
 - Run the app on your desired platform.
   There are a few known issues with the Music Player app using Compose Multiplatform UI:
 - Run on Desktop
+
+  The desktop player uses Judio 0.2.x, which requires **JDK 25**. Install a JDK 25 distribution and
+  either set `JAVA_HOME` to it or let Gradle detect it as a Java toolchain. VLC is no longer needed.
+
   ```
   ./gradlew desktopApp:run
+  ```
+
+  Run the headless desktop playback tests with:
+
+  ```
+  ./gradlew :shared:desktopTest
   ```
   - Run on Web
   ```
@@ -72,7 +82,7 @@ TravelApp: https://github.com/SEAbdulbasit/TravelApp-KMP
 - Kotlin
 - Compose Multiplatform UI
 - AVKit Media Player
-- VLC media player
+- Judio (desktop/JVM)
 - HTML media player
 - [Compose Image Loader](https://github.com/qdsfdhvh/compose-imageloader)
 - Decompose
